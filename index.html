@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Cleaning Service Enquiry</title>
+
+  <!-- Business Configuration -->
+  <script src="config.js"></script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef4f2;
+      min-height: 100vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 30px;
+    }
+
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      min-height: 650px;
+
+      background: white;
+
+      border-radius: 24px;
+      overflow: hidden;
+
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.12);
+    }
+
+
+    /* =========================
+       LEFT PROMOTION
+    ========================= */
+
+    .promotion {
+
+      background: var(--brand-color);
+
+      color: white;
+
+      padding: 45px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+
+    .logo {
+
+      width: 60px;
+      height: 60px;
+
+      border-radius: 15px;
+
+      background: white;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--brand-color);
+
+      font-size: 24px;
+      font-weight: bold;
+
+      margin-bottom: 20px;
+    }
+
+
+    .business-name {
+
+      font-size: 18px;
+      font-weight: 700;
+
+      margin-bottom: 8px;
+    }
+
+
+    .tagline {
+
+      font-size: 14px;
+
+      opacity: 0.85;
+
+      margin-bottom: 30px;
+    }
+
+
+    .promotion h1 {
+
+      font-size: 42px;
+      line-height: 1.1;
+
+      margin-bottom: 18px;
+    }
+
+
+    .promotion-description {
+
+      font-size: 16px;
+      line-height: 1.6;
+
+      opacity: 0.9;
+
+      margin-bottom: 25px;
+    }
+
+
+    .benefits {
+
+      list-style: none;
+
+      margin-bottom: 25px;
+    }
+
+
+    .benefits li {
+
+      margin-bottom: 12px;
+
+      font-size: 15px;
+    }
+
+
+    .benefits li::before {
+
+      content: "✓";
+
+      margin-right: 10px;
+
+      font-weight: bold;
+    }
+
+
+    .offer {
+
+      background: rgba(255,255,255,0.12);
+
+      padding: 15px;
+
+      border-radius: 12px;
+
+      font-size: 14px;
+    }
+
+
+    /* =========================
+       RIGHT FORM
+    ========================= */
+
+    .form-section {
+
+      padding: 45px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+
+    .form-section h2 {
+
+      font-size: 30px;
+
+      color: #17211f;
+
+      margin-bottom: 8px;
+    }
+
+
+    .form-subtitle {
+
+      color: #6b7280;
+
+      font-size: 14px;
+
+      margin-bottom: 28px;
+    }
+
+
+    #cleaningForm {
+
+      width: 100%;
+    }
+
+
+    #dynamicFields {
+
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      column-gap: 14px;
+
+      row-gap: 0;
+    }
+
+
+    .form-group {
+
+      margin-bottom: 17px;
+    }
+
+
+    .form-group.full-width {
+
+      grid-column: 1 / -1;
+    }
+
+
+    label {
+
+      display: block;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      color: #374151;
+
+      margin-bottom: 7px;
+    }
+
+
+    input,
+    select,
+    textarea {
+
+      width: 100%;
+
+      border: 1px solid #d9dfdd;
+
+      border-radius: 10px;
+
+      padding: 13px 14px;
+
+      font-size: 14px;
+
+      outline: none;
+
+      transition: 0.2s;
+
+      background: #fafcfb;
+    }
+
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+
+      border-color: var(--brand-color);
+
+      background: white;
+
+      box-shadow:
+        0 0 0 3px rgba(15,118,110,0.08);
+    }
+
+
+    textarea {
+
+      min-height: 80px;
+
+      resize: vertical;
+    }
+
+
+    .submit-btn {
+
+      width: 100%;
+
+      border: none;
+
+      border-radius: 11px;
+
+      padding: 15px;
+
+      background: var(--brand-color);
+
+      color: white;
+
+      font-size: 15px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition: 0.2s;
+
+      margin-top: 5px;
+    }
+
+
+    .submit-btn:hover {
+
+      filter: brightness(0.9);
+
+      transform: translateY(-1px);
+    }
+
+
+    /* =========================
+       SUCCESS MESSAGE
+    ========================= */
+
+    .success-message {
+
+      display: none;
+
+      text-align: center;
+
+      padding: 30px 10px;
+    }
+
+
+    .success-icon {
+
+      width: 65px;
+      height: 65px;
+
+      margin: 0 auto 18px;
+
+      border-radius: 50%;
+
+      background: #e7f7f2;
+
+      color: var(--brand-color);
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      font-size: 34px;
+      font-weight: bold;
+    }
+
+
+    .success-message h3 {
+
+      font-size: 24px;
+
+      margin-bottom: 10px;
+
+      color: #17211f;
+    }
+
+
+    .success-message p {
+
+      color: #6b7280;
+
+      line-height: 1.5;
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 800px) {
+
+      body {
+
+        padding: 15px;
+      }
+
+
+      .container {
+
+        grid-template-columns: 1fr;
+      }
+
+
+      .promotion {
+
+        padding: 35px 28px;
+      }
+
+
+      .promotion h1 {
+
+        font-size: 32px;
+      }
+
+
+      .form-section {
+
+        padding: 35px 28px;
+      }
+    }
+
+
+    @media (max-width: 550px) {
+
+      #dynamicFields {
+
+        grid-template-columns: 1fr;
+      }
+
+
+      .form-group.full-width {
+
+        grid-column: auto;
+      }
+
+
+      .promotion h1 {
+
+        font-size: 28px;
+      }
+
+
+      .form-section h2 {
+
+        font-size: 25px;
+      }
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <div class="container">
+
+
+    <!-- =========================
+         LEFT PROMOTION
+    ========================= -->
+
+    <section class="promotion">
+
+
+      <div
+        class="logo"
+        id="businessLogo"
+      >
+        SC
+      </div>
+
+
+      <div
+        class="business-name"
+        id="businessName"
+      >
+        Sparkle Clean
+      </div>
+
+
+      <div
+        class="tagline"
+        id="businessTagline"
+      >
+        Professional Cleaning Services
+      </div>
+
+
+      <h1 id="promotionHeadline">
+        A Cleaner Space Starts Here.
+      </h1>
+
+
+      <p
+        class="promotion-description"
+        id="promotionDescription"
+      >
+        Reliable and professional cleaning services
+        for homes, offices and commercial spaces.
+      </p>
+
+
+      <ul
+        class="benefits"
+        id="benefitsList"
+      >
+      </ul>
+
+
+      <div
+        class="offer"
+        id="promotionOffer"
+      >
+        ✨ Request your cleaning service today.
+      </div>
+
+
+    </section>
+
+
+    <!-- =========================
+         RIGHT FORM
+    ========================= -->
+
+    <section class="form-section">
+
+
+      <div id="formContainer">
+
+
+        <h2 id="formTitle">
+          Request a Quote
+        </h2>
+
+
+        <p
+          class="form-subtitle"
+          id="formSubtitle"
+        >
+          Tell us what you need and we'll get back to you.
+        </p>
+
+
+        <form id="cleaningForm">
+
+
+          <!-- Dynamic fields will appear here -->
+
+          <div id="dynamicFields"></div>
+
+
+          <button
+            type="submit"
+            class="submit-btn"
+            id="submitButton"
+          >
+            Request a Quote →
+          </button>
+
+
+        </form>
+
+
+      </div>
+
+
+      <!-- =========================
+           SUCCESS MESSAGE
+      ========================= -->
+
+      <div
+        id="successMessage"
+        class="success-message"
+      >
+
+        <div class="success-icon">
+          ✓
+        </div>
+
+
+        <h3 id="successTitle">
+          Enquiry Received!
+        </h3>
+
+
+        <p id="successText">
+          Thank you for contacting us.
+          We'll get back to you shortly.
+        </p>
+
+      </div>
+
+
+    </section>
+
+
+  </div>
+
+
+
+  <!-- =========================
+       FORM ENGINE
+  ========================= -->
+
+  <script>
+
+
+    const form =
+      document.getElementById("cleaningForm");
+
+
+    const dynamicFields =
+      document.getElementById("dynamicFields");
+
+
+    /*
+     * ============================
+     * APPLY BUSINESS CONFIG
+     * ============================
+     */
+
+    function applyBusinessConfig() {
+
+
+      /*
+       * BRAND COLOR
+       */
+
+      document.documentElement.style.setProperty(
+        "--brand-color",
+        businessConfig.business.brandColor
+      );
+
+
+      /*
+       * BUSINESS INFORMATION
+       */
+
+      document.getElementById("businessLogo").textContent =
+        businessConfig.business.logoText;
+
+
+      document.getElementById("businessName").textContent =
+        businessConfig.business.name;
+
+
+      document.getElementById("businessTagline").textContent =
+        businessConfig.business.tagline;
+
+
+      /*
+       * PROMOTION
+       */
+
+      document.getElementById("promotionHeadline").textContent =
+        businessConfig.promotion.headline;
+
+
+      document.getElementById("promotionDescription").textContent =
+        businessConfig.promotion.description;
+
+
+      /*
+       * BENEFITS
+       */
+
+      const benefitsList =
+        document.getElementById("benefitsList");
+
+
+      benefitsList.innerHTML = "";
+
+
+      businessConfig.promotion.benefits.forEach(
+        benefit => {
+
+          const li =
+            document.createElement("li");
+
+          li.textContent = benefit;
+
+          benefitsList.appendChild(li);
+
+        }
+      );
+
+
+      /*
+       * OFFER
+       */
+
+      document.getElementById("promotionOffer").textContent =
+        "✨ " + businessConfig.promotion.offer;
+
+
+      /*
+       * FORM TEXT
+       */
+
+      document.getElementById("formTitle").textContent =
+        businessConfig.form.title;
+
+
+      document.getElementById("formSubtitle").textContent =
+        businessConfig.form.subtitle;
+
+
+      document.getElementById("submitButton").textContent =
+        businessConfig.form.buttonText;
+
+
+    }
+
+
+
+    /*
+     * ============================
+     * CREATE DYNAMIC FIELD
+     * ============================
+     */
+
+    function createField(field) {
+
+if (field.visible === false) {
+  return;
+}
+      const group =
+        document.createElement("div");
+
+
+      group.className = "form-group";
+
+
+      /*
+       * Textarea aur long fields
+       * full width rahenge.
+       */
+
+      if (
+        field.type === "textarea" ||
+        field.fullWidth === true
+      ) {
+
+        group.classList.add("full-width");
+
+      }
+
+
+      /*
+       * LABEL
+       */
+
+      const label =
+        document.createElement("label");
+
+
+      label.htmlFor = field.id;
+
+
+      label.textContent =
+        field.label +
+        (field.required ? " *" : "");
+
+
+      group.appendChild(label);
+
+
+      let input;
+
+
+      /*
+       * SELECT FIELD
+       */
+
+      if (field.type === "select") {
+
+
+        input =
+          document.createElement("select");
+
+
+        const placeholder =
+          document.createElement("option");
+
+
+        placeholder.value = "";
+
+
+        placeholder.textContent =
+          field.placeholder ||
+          "Select an option";
+
+
+        input.appendChild(placeholder);
+
+
+        if (field.options) {
+
+
+          field.options.forEach(option => {
+
+
+            const optionElement =
+              document.createElement("option");
+
+
+            optionElement.value =
+              option;
+
+
+            optionElement.textContent =
+              option;
+
+
+            input.appendChild(
+              optionElement
+            );
+
+          });
+
+        }
+
+
+      }
+
+
+      /*
+       * TEXTAREA
+       */
+
+      else if (field.type === "textarea") {
+
+
+        input =
+          document.createElement("textarea");
+
+      }
+
+
+      /*
+       * NORMAL INPUT
+       */
+
+      else {
+
+
+        input =
+          document.createElement("input");
+
+
+        input.type =
+          field.type || "text";
+
+      }
+
+
+      /*
+       * COMMON ATTRIBUTES
+       */
+
+      input.id =
+        field.id;
+
+
+      input.name =
+        field.id;
+
+
+      if (field.placeholder) {
+
+        input.placeholder =
+          field.placeholder;
+
+      }
+
+
+      input.required =
+        field.required === true;
+
+
+      /*
+       * ADD FIELD
+       */
+
+      group.appendChild(input);
+
+
+      dynamicFields.appendChild(group);
+
+    }
+
+
+
+    /*
+     * ============================
+     * RENDER ALL FORM FIELDS
+     * ============================
+     */
+
+    function renderForm() {
+
+
+      dynamicFields.innerHTML = "";
+
+
+      businessConfig.form.fields.forEach(
+        field => {
+
+          createField(field);
+
+        }
+      );
+
+    }
+
+
+
+    /* ============================
+   FORM SUBMISSION
+   ============================ */
+
+form.addEventListener(
+  "submit",
+  async function(event) {
+
+    event.preventDefault();
+
+    const formData =
+      new FormData(form);
+
+    const leadData =
+      Object.fromEntries(
+        formData.entries()
+      );
+
+    // Business ID bhi lead ke saath send hoga
+    leadData.businessId =
+      businessConfig.businessId;
+
+    console.log(
+      "Sending Lead Data:",
+      leadData
+    );
+
+    try {
+
+      const response =
+        await fetch(
+          businessConfig.webhookUrl,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(
+              leadData
+            )
+          }
+        );
+
+
+      // ============================
+      // READ N8N RESPONSE
+      // ============================
+
+      let result = {};
+
+      try {
+        result = await response.json();
+      } catch (jsonError) {
+        result = {};
+      }
+
+
+      // ============================
+      // INVALID LEAD
+      // ============================
+
+      if (!response.ok) {
+
+        console.error(
+          "Validation Error:",
+          result
+        );
+
+        let errorMessage =
+          result.message ||
+          "Please check your information and try again.";
+
+        // Validation errors ko readable text mein convert karo
+        if (
+          Array.isArray(result.errors) &&
+          result.errors.length > 0
+        ) {
+
+          errorMessage =
+            result.errors.join("\n");
+
+        }
+
+        alert(errorMessage);
+
+        return;
+      }
+
+
+      // ============================
+      // SUCCESS
+      // ============================
+
+      console.log(
+        "Lead successfully sent to n8n!",
+        result
+      );
+
+
+      // HIDE FORM
+      document.getElementById(
+        "formContainer"
+      ).style.display = "none";
+
+
+      // SHOW SUCCESS
+      const successMessage =
+        document.getElementById(
+          "successMessage"
+        );
+
+      successMessage.style.display =
+        "block";
+
+
+      document.getElementById(
+        "successTitle"
+      ).textContent =
+        businessConfig.form.successTitle;
+
+
+      document.getElementById(
+        "successText"
+      ).textContent =
+        businessConfig.form.successMessage;
+
+
+    } catch (error) {
+
+      console.error(
+        "Webhook Error:",
+        error
+      );
+
+      alert(
+        "Unable to connect to the server. Please try again."
+      );
+
+    }
+
+  }
+);
+
+
+
+    /*
+     * ============================
+     * START MASTER FORM
+     * ============================
+     */
+
+    applyBusinessConfig();
+
+    renderForm();
+
+
+  </script>
+
+
+</body>
+
+</html>
