@@ -1,5 +1,5 @@
 const businessConfig = {
-  webhookUrl: "https://hemagencynmn.app.n8n.cloud/webhook-test/dfa1f894-0f2a-4231-9df9-8c0d01acce6e",
+  webhookUrl: "https://hemagencynmn.app.n8n.cloud/webhook/dfa1f894-0f2a-4231-9df9-8c0d01acce6e",
 
   businessId: "CLEAN001",
 
