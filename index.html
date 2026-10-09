@@ -329,6 +329,64 @@
 
 
     /* =========================
+       FORM SUBMISSION LOADING OVERLAY
+    ========================= */
+
+    #formContainer {
+      position: relative;
+    }
+
+    #formLoading {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.90);
+      border-radius: 12px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+      text-align: center;
+      color: #17211f;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 24px;
+    }
+
+    #formLoading .spinner {
+      width: 42px;
+      height: 42px;
+      border: 4px solid #d9dfdd;
+      border-top-color: var(--brand-color);
+      border-radius: 50%;
+      animation: formSpin 0.8s linear infinite;
+    }
+
+    #formLoading p {
+      margin: 0;
+    }
+
+    #formLoading small {
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .submit-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.75;
+      transform: none;
+    }
+
+    @keyframes formSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+
+    /* =========================
        SUCCESS MESSAGE
     ========================= */
 
@@ -528,6 +586,13 @@
 
 
       <div id="formContainer">
+
+        <!-- Loading overlay shown while the enquiry is being submitted -->
+        <div id="formLoading" role="status" aria-live="polite" aria-hidden="true">
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Submitting your enquiry...</p>
+          <small>Please wait, do not close this page.</small>
+        </div>
 
 
         <h2 id="formTitle">
@@ -927,138 +992,88 @@ form.addEventListener(
 
     event.preventDefault();
 
-    const formData =
-      new FormData(form);
+    const submitButton = document.getElementById("submitButton");
+    const formLoading = document.getElementById("formLoading");
 
-    const leadData =
-      Object.fromEntries(
-        formData.entries()
-      );
+    // Prevent duplicate submissions while the request is in progress.
+    if (submitButton.disabled) {
+      return;
+    }
 
-    // Business ID bhi lead ke saath send hoga
-    leadData.businessId =
-      businessConfig.businessId;
+    submitButton.disabled = true;
+    formLoading.style.display = "flex";
+    formLoading.setAttribute("aria-hidden", "false");
 
-    console.log(
-      "Sending Lead Data:",
-      leadData
-    );
+    const formData = new FormData(form);
+    const leadData = Object.fromEntries(formData.entries());
+
+    // Business ID bhi lead ke saath send hoga.
+    leadData.businessId = businessConfig.businessId;
+
+    console.log("Sending Lead Data:", leadData);
 
     try {
+      const response = await fetch(businessConfig.webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(leadData)
+      });
 
-      const response =
-        await fetch(
-          businessConfig.webhookUrl,
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(
-              leadData
-            )
-          }
-        );
-
-
-      // ============================
-      // READ N8N RESPONSE
-      // ============================
-
+      // Read the n8n response safely.
       let result = {};
-
       try {
         result = await response.json();
       } catch (jsonError) {
         result = {};
       }
 
-
-      // ============================
-      // INVALID LEAD
-      // ============================
-
+      // Invalid lead / validation error.
       if (!response.ok) {
-
-        console.error(
-          "Validation Error:",
-          result
-        );
+        console.error("Validation Error:", result);
 
         let errorMessage =
           result.message ||
           "Please check your information and try again.";
 
-        // Validation errors ko readable text mein convert karo
-        if (
-          Array.isArray(result.errors) &&
-          result.errors.length > 0
-        ) {
-
-          errorMessage =
-            result.errors.join("\n");
-
+        if (Array.isArray(result.errors) && result.errors.length > 0) {
+          errorMessage = result.errors.join("\n");
         }
 
-        alert(errorMessage);
+        // Hide loader and allow the customer to correct and resubmit.
+        formLoading.style.display = "none";
+        formLoading.setAttribute("aria-hidden", "true");
+        submitButton.disabled = false;
 
+        alert(errorMessage);
         return;
       }
 
+      // Success: show the configured confirmation message.
+      console.log("Lead successfully sent to n8n!", result);
 
-      // ============================
-      // SUCCESS
-      // ============================
+      document.getElementById("formContainer").style.display = "none";
 
-      console.log(
-        "Lead successfully sent to n8n!",
-        result
-      );
+      const successMessage = document.getElementById("successMessage");
+      successMessage.style.display = "block";
 
-
-      // HIDE FORM
-      document.getElementById(
-        "formContainer"
-      ).style.display = "none";
-
-
-      // SHOW SUCCESS
-      const successMessage =
-        document.getElementById(
-          "successMessage"
-        );
-
-      successMessage.style.display =
-        "block";
-
-
-      document.getElementById(
-        "successTitle"
-      ).textContent =
+      document.getElementById("successTitle").textContent =
         businessConfig.form.successTitle;
 
-
-      document.getElementById(
-        "successText"
-      ).textContent =
+      document.getElementById("successText").textContent =
         businessConfig.form.successMessage;
 
-
     } catch (error) {
+      console.error("Webhook Error:", error);
 
-      console.error(
-        "Webhook Error:",
-        error
-      );
+      // Network error: hide loader and allow another attempt.
+      formLoading.style.display = "none";
+      formLoading.setAttribute("aria-hidden", "true");
+      submitButton.disabled = false;
 
-      alert(
-        "Unable to connect to the server. Please try again."
-      );
-
+      alert("Unable to connect to the server. Please try again.");
     }
-
   }
 );
 
